@@ -28,5 +28,7 @@ pub fn has_hardware_support() -> bool {
     // to get whether Virtualization Host Extensions is supported.
 
     // Current just return true by default.
+    trace!("has_hardware_support check");
+
     true
 }
