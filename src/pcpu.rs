@@ -50,12 +50,15 @@ impl<H: AxVCpuHal> AxArchPerCpu for Aarch64PerCpu<H> {
         // First we save origin `exception_vector_base`.
         // Safety:
         // Todo: take care of `preemption`
+        info!("hardware_enable write");
         unsafe { ORI_EXCEPTION_VECTOR_BASE.write_current_raw(VBAR_EL2.get() as usize) }
 
         // Set current `VBAR_EL2` to `exception_vector_base_vcpu`
         // defined in this crate.
+        info!("hardware_enable set");
         VBAR_EL2.set(exception_vector_base_vcpu as usize as _);
 
+        info!("hardware_enable modify HCR_EL2");
         HCR_EL2.modify(
             HCR_EL2::VM::Enable
                 + HCR_EL2::RW::EL1IsAarch64
@@ -64,6 +67,7 @@ impl<H: AxVCpuHal> AxArchPerCpu for Aarch64PerCpu<H> {
                 + HCR_EL2::TSC::EnableTrapEl1SmcToEl2,
         );
 
+        info!("hardware_enable succ");
         Ok(())
     }
 
